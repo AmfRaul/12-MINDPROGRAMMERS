@@ -1,208 +1,302 @@
 {% extends "base.html" %}
 
+{% block body_class %}home-page{% endblock %}
+{% block main_class %}home-main{% endblock %}
+
 {% block content %}
-<div class="mb-4">
-    <h1 class="h2 mb-1">FieldReach</h1>
-    <p class="text-muted mb-0">
-        Conexao direta entre produtores rurais e compradores do agronegocio.
-    </p>
-</div>
-
-{% if user.is_authenticated %}
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="card p-3 h-100">
-                <p class="text-muted mb-1">Conta</p>
-                <h2 class="h5 mb-0">{{ user.get_tipo_conta_display }}</h2>
-            </div>
-        </div>
-
-        {% if user.is_produtor %}
-            <div class="col-md-4">
-                <div class="card p-3 h-100">
-                    <p class="text-muted mb-1">Meus produtos</p>
-                    <h2 class="h5 mb-0">{{ total_meus_produtos|default:0 }}</h2>
-                </div>
+<section class="field-hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="bi bi-patch-check-fill"></i>
+                <span>Plataforma do Agronegocio Brasileiro</span>
             </div>
 
-            <div class="col-md-4">
-                <div class="card p-3 h-100">
-                    <p class="text-muted mb-1">Pedidos pendentes</p>
-                    <h2 class="h5 mb-0">{{ pedidos_pendentes|default:0 }}</h2>
-                </div>
-            </div>
-        {% else %}
-            <div class="col-md-4">
-                <div class="card p-3 h-100">
-                    <p class="text-muted mb-1">Produtos disponiveis</p>
-                    <h2 class="h5 mb-0">{{ total_produtos }}</h2>
-                </div>
-            </div>
+            <h1 class="hero-title">
+                Conecte seu negocio
+                <span>ao campo real</span>
+            </h1>
 
-            <div class="col-md-4">
-                <div class="card p-3 h-100">
-                    <p class="text-muted mb-1">Meus pedidos recentes</p>
-                    <h2 class="h5 mb-0">{{ pedidos_comprador|length }}</h2>
-                </div>
-            </div>
-        {% endif %}
-    </div>
+            <p class="hero-copy">
+                Produtores rurais e compradores em um unico lugar,
+                sem intermediarios, sem complicacao. Direto da fonte para voce.
+            </p>
 
-    {% if user.is_produtor %}
-        {% if perfil_produtor %}
-            <div class="d-flex flex-wrap gap-2 mb-4">
-                <a href="{% url 'marketplace:criar_produto' %}" class="btn btn-success">
-                    Novo produto
+            <div class="hero-actions">
+                <a href="{% url 'marketplace:lista_produtos' %}" class="btn btn-field">
+                    <i class="bi bi-shop"></i>
+                    Explorar marketplace
                 </a>
-                <a href="{% url 'marketplace:meus_produtos' %}" class="btn btn-outline-success">
-                    Gerenciar produtos
-                </a>
-                <a href="{% url 'pedidos:meus_pedidos' %}" class="btn btn-outline-secondary">
-                    Ver pedidos
-                </a>
-            </div>
 
-            <h2 class="h4">Pedidos recebidos</h2>
-            {% if pedidos_recebidos %}
-                <div class="table-responsive mb-5">
-                    <table class="table align-middle">
-                        <thead>
-                            <tr>
-                                <th>Produto</th>
-                                <th>Comprador</th>
-                                <th>Status</th>
-                                <th class="text-end">Acoes</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for pedido in pedidos_recebidos %}
-                                <tr>
-                                    <td>{{ pedido.produto.nome }}</td>
-                                    <td>{{ pedido.comprador.username }}</td>
-                                    <td>{{ pedido.get_status_display }}</td>
-                                    <td class="text-end">
-                                        {% if pedido.status == "pendente" %}
-                                            <div class="d-flex justify-content-end gap-2">
-                                                <form method="post" action="{% url 'pedidos:decidir_pedido' pedido.id 'aceitar' %}">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-sm btn-success">
-                                                        Aceitar
-                                                    </button>
-                                                </form>
-
-                                                <form method="post" action="{% url 'pedidos:decidir_pedido' pedido.id 'recusar' %}">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                        Recusar
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        {% elif pedido.status == "aceito" %}
-                                            <form method="post" action="{% url 'pedidos:concluir_pedido' pedido.id %}">
-                                                {% csrf_token %}
-                                                <button type="submit" class="btn btn-sm btn-outline-success">
-                                                    Marcar concluido
-                                                </button>
-                                            </form>
-                                        {% else %}
-                                            <span class="text-muted">Sem acao</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <div class="alert alert-info">
-                    Voce ainda nao recebeu pedidos.
-                </div>
-            {% endif %}
-        {% else %}
-            <div class="alert alert-warning">
-                Complete seu perfil de produtor para cadastrar produtos e receber pedidos.
+                {% if user.is_authenticated %}
+                    <a href="{% url 'accounts:perfil' %}" class="btn btn-hero-outline">
+                        <i class="bi bi-person-circle"></i>
+                        Minha conta
+                    </a>
+                {% else %}
+                    <a href="{% url 'accounts:cadastro' %}" class="btn btn-hero-outline">
+                        <i class="bi bi-person-plus"></i>
+                        Criar conta
+                    </a>
+                {% endif %}
             </div>
-            <a href="{% url 'produtores:meu_perfil' %}" class="btn btn-success">
-                Completar perfil
-            </a>
-        {% endif %}
-    {% else %}
-        <div class="d-flex flex-wrap gap-2 mb-4">
-            <a href="{% url 'marketplace:lista_produtos' %}" class="btn btn-success">
-                Explorar marketplace
-            </a>
-            <a href="{% url 'pedidos:meus_pedidos' %}" class="btn btn-outline-secondary">
-                Meus pedidos
-            </a>
-        </div>
-
-        <h2 class="h4">Meus pedidos recentes</h2>
-        {% if pedidos_comprador %}
-            <div class="table-responsive mb-5">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>Produto</th>
-                            <th>Quantidade</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for pedido in pedidos_comprador %}
-                            <tr>
-                                <td>{{ pedido.produto.nome }}</td>
-                                <td>{{ pedido.quantidade|floatformat:"-2" }} {{ pedido.produto.unidade_medida }}</td>
-                                <td>{{ pedido.get_status_display }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="alert alert-info">
-                Voce ainda nao fez pedidos.
-            </div>
-        {% endif %}
-    {% endif %}
-{% else %}
-    <div class="p-4 mb-4 bg-light rounded-3">
-        <h2 class="h4">Compre direto de produtores rurais</h2>
-        <p class="mb-3">
-            Encontre produtos disponiveis, negocie pedidos e acompanhe avaliacoes.
-        </p>
-        <div class="d-flex flex-wrap gap-2">
-            <a href="{% url 'accounts:cadastro' %}" class="btn btn-success">
-                Criar conta
-            </a>
-            <a href="{% url 'marketplace:lista_produtos' %}" class="btn btn-outline-success">
-                Ver marketplace
-            </a>
         </div>
     </div>
-{% endif %}
+</section>
 
-<h2 class="h4">Produtos recentes</h2>
-{% if produtos_recentes %}
-    <div class="row g-3">
-        {% for produto in produtos_recentes %}
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 p-3">
-                    <p class="text-muted mb-1">{{ produto.categoria.nome }}</p>
-                    <h3 class="h5">{{ produto.nome }}</h3>
-                    <p class="mb-1">{{ produto.produtor.nome_negocio }}</p>
-                    <p class="mb-3">
-                        R$ {{ produto.preco|floatformat:2 }} / {{ produto.unidade_medida }}
-                    </p>
-                    <a href="{% url 'marketplace:detalhe_produto' produto.id %}" class="btn btn-sm btn-outline-success mt-auto">
-                        Ver produto
+<section class="dashboard-band">
+    <div class="container">
+        <div class="dashboard-shell">
+        {% if user.is_authenticated %}
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+                <div>
+                    <h2 class="dashboard-title mb-0">Painel FieldReach</h2>
+                </div>
+
+                <div class="dashboard-actions d-flex flex-wrap gap-2 align-items-start">
+                    {% if user.is_produtor %}
+                        <a href="{% url 'marketplace:criar_produto' %}" class="btn btn-field btn-sm">
+                            <i class="bi bi-plus-circle"></i>
+                            Novo produto
+                        </a>
+                        <a href="{% url 'marketplace:meus_produtos' %}" class="btn btn-outline-success btn-sm">
+                            Gerenciar produtos
+                        </a>
+                    {% else %}
+                        <a href="{% url 'marketplace:lista_produtos' %}" class="btn btn-field btn-sm">
+                            Explorar marketplace
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'pedidos:meus_pedidos' %}" class="btn btn-outline-success btn-sm">
+                        Meus pedidos
                     </a>
                 </div>
             </div>
-        {% endfor %}
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="metric-card h-100">
+                        <div>
+                            <p class="metric-label">Tipo de conta</p>
+                            <h3>{{ user.get_tipo_conta_display }}</h3>
+                        </div>
+                        <span class="metric-icon">
+                            <i class="bi bi-flower1"></i>
+                        </span>
+                    </div>
+                </div>
+
+                {% if user.is_produtor %}
+                    <div class="col-md-4">
+                        <div class="metric-card h-100">
+                            <div>
+                                <p class="metric-label">Meus produtos</p>
+                                <h3>{{ total_meus_produtos|default:0 }}</h3>
+                            </div>
+                            <span class="metric-icon">
+                                <i class="bi bi-basket2"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="metric-card h-100">
+                            <div>
+                                <p class="metric-label">Pedidos pendentes</p>
+                                <h3>{{ pedidos_pendentes|default:0 }}</h3>
+                            </div>
+                            <span class="metric-icon">
+                                <i class="bi bi-clipboard-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-md-4">
+                        <div class="metric-card h-100">
+                            <div>
+                                <p class="metric-label">Produtos disponiveis</p>
+                                <h3>{{ total_produtos }}</h3>
+                            </div>
+                            <span class="metric-icon">
+                                <i class="bi bi-shop"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="metric-card h-100">
+                            <div>
+                                <p class="metric-label">Pedidos recentes</p>
+                                <h3>{{ pedidos_comprador|length }}</h3>
+                            </div>
+                            <span class="metric-icon">
+                                <i class="bi bi-receipt"></i>
+                            </span>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if user.is_produtor %}
+                {% if perfil_produtor %}
+                    <div class="dashboard-section-head">
+                        <h2>Pedidos recebidos</h2>
+                        <a href="{% url 'pedidos:meus_pedidos' %}">
+                            Ver todos
+                        </a>
+                    </div>
+
+                    {% if pedidos_recebidos %}
+                        <div class="table-responsive mb-4">
+                            <table class="table dashboard-table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Comprador</th>
+                                        <th>Status</th>
+                                        <th class="text-end">Acoes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for pedido in pedidos_recebidos %}
+                                        <tr>
+                                            <td>{{ pedido.produto.nome }}</td>
+                                            <td>{{ pedido.comprador.username }}</td>
+                                            <td>
+                                                <span class="status-pill status-{{ pedido.status }}">
+                                                    {{ pedido.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td class="text-end">
+                                                {% if pedido.status == "pendente" %}
+                                                    <div class="d-flex justify-content-end gap-2">
+                                                        <form method="post" action="{% url 'pedidos:decidir_pedido' pedido.id 'aceitar' %}">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="btn btn-sm btn-success">
+                                                                Aceitar
+                                                            </button>
+                                                        </form>
+
+                                                        <form method="post" action="{% url 'pedidos:decidir_pedido' pedido.id 'recusar' %}">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                                Recusar
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                {% elif pedido.status == "aceito" %}
+                                                    <form method="post" action="{% url 'pedidos:concluir_pedido' pedido.id %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-outline-success">
+                                                            Marcar concluido
+                                                        </button>
+                                                    </form>
+                                                {% else %}
+                                                    <span class="text-muted small">Sem acao</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            Voce ainda nao recebeu pedidos.
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-warning">
+                        Complete seu perfil de produtor para cadastrar produtos e receber pedidos.
+                    </div>
+                    <a href="{% url 'produtores:meu_perfil' %}" class="btn btn-field">
+                        Completar perfil
+                    </a>
+                {% endif %}
+            {% else %}
+                <div class="dashboard-section-head">
+                    <h2>Meus pedidos recentes</h2>
+                    <a href="{% url 'pedidos:meus_pedidos' %}">
+                        Ver todos
+                    </a>
+                </div>
+
+                {% if pedidos_comprador %}
+                    <div class="table-responsive mb-4">
+                        <table class="table dashboard-table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Quantidade</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pedido in pedidos_comprador %}
+                                    <tr>
+                                        <td>{{ pedido.produto.nome }}</td>
+                                        <td>{{ pedido.quantidade|floatformat:"-2" }} {{ pedido.produto.unidade_medida }}</td>
+                                        <td>
+                                            <span class="status-pill status-{{ pedido.status }}">
+                                                {{ pedido.get_status_display }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        Voce ainda nao fez pedidos.
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+        <div class="dashboard-section-head product-head">
+            <div>
+                <h2>Direto do produtor</h2>
+                <p>Produtos recentes</p>
+            </div>
+            <a href="{% url 'marketplace:lista_produtos' %}">
+                Ver marketplace
+            </a>
+        </div>
+
+        {% if produtos_recentes %}
+            <div class="row g-3">
+                {% for produto in produtos_recentes %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="product-card h-100">
+                            {% if produto.imagem %}
+                                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-card-img">
+                            {% else %}
+                                <div class="product-card-img product-card-placeholder">
+                                    <i class="bi bi-image"></i>
+                                </div>
+                            {% endif %}
+
+                            <div class="product-card-body">
+                                <h3>{{ produto.nome }}</h3>
+                                <p>{{ produto.produtor.nome_negocio }}</p>
+                                <div class="product-card-footer">
+                                    <strong>R$ {{ produto.preco|floatformat:2 }} / {{ produto.unidade_medida }}</strong>
+                                    <a href="{% url 'marketplace:detalhe_produto' produto.id %}" class="btn btn-sm btn-outline-success">
+                                        Ver produto
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                Ainda nao ha produtos cadastrados.
+            </div>
+        {% endif %}
+        </div>
     </div>
-{% else %}
-    <div class="alert alert-info">
-        Ainda nao ha produtos cadastrados.
-    </div>
-{% endif %}
+</section>
 {% endblock %}
