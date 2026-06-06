@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{% url 'marketplace:lista_produtos' %}" class="text-success text-decoration-none">
+        Voltar ao marketplace
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        {% if produto.imagem %}
+            <img
+                src="{{ produto.imagem.url }}"
+                alt="{{ produto.nome }}"
+                class="img-fluid rounded shadow-sm"
+            >
+        {% else %}
+            <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted" style="min-height: 320px;">
+                Produto sem imagem
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-6">
+        <div class="d-flex gap-2 mb-3">
+            <span class="badge bg-success-subtle text-success">
+                {{ produto.categoria.nome }}
+            </span>
+            <span class="badge bg-secondary">
+                {{ produto.get_status_display }}
+            </span>
+        </div>
+
+        <h1 class="h2">{{ produto.nome }}</h1>
+        <p class="text-muted">
+            Oferecido por <strong>{{ produto.produtor.nome_negocio }}</strong>
+        </p>
+
+        <p>{{ produto.descricao }}</p>
+
+        <div class="card p-4 my-4">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <p class="mb-1 text-muted">Quantidade disponivel</p>
+                    <p class="mb-0 fw-semibold">
+                        {{ produto.quantidade_disponivel }} {{ produto.unidade_medida }}
+                    </p>
+                </div>
+
+                <div class="col-sm-6">
+                    <p class="mb-1 text-muted">Preco</p>
+                    <p class="mb-0 fw-semibold">R$ {{ produto.preco }}</p>
+                </div>
+
+                <div class="col-sm-6">
+                    <p class="mb-1 text-muted">Regiao</p>
+                    <p class="mb-0 fw-semibold">{{ produto.regiao }}</p>
+                </div>
+
+                <div class="col-sm-6">
+                    <p class="mb-1 text-muted">Disponibilidade</p>
+                    <p class="mb-0 fw-semibold">{{ produto.data_disponibilidade }}</p>
+                </div>
+
+                <div class="col-sm-6">
+                    <p class="mb-1 text-muted">Entrega estimada</p>
+                    <p class="mb-0 fw-semibold">
+                        {{ produto.data_entrega_estimada|default:"Nao informada" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-4">
+            <h2 class="h5">Produtor</h2>
+            <p class="mb-1"><strong>{{ produto.produtor.nome_negocio }}</strong></p>
+            <p class="mb-1">{{ produto.produtor.cidade }} - {{ produto.produtor.estado }}</p>
+            <p class="mb-0">{{ produto.produtor.tipo_producao }}</p>
+
+            {% if produto.produtor.exibir_contato and produto.produtor.contato_comercial %}
+                <p class="mt-3 mb-0">
+                    <strong>Contato comercial:</strong>
+                    {{ produto.produtor.contato_comercial }}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

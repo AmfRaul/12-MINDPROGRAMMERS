@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="h2 mb-1">Marketplace</h1>
+        <p class="text-muted mb-0">
+            Produtos disponiveis diretamente de produtores rurais.
+        </p>
+    </div>
+
+    {% if user.is_authenticated and user.is_produtor %}
+        <a href="{% url 'marketplace:criar_produto' %}" class="btn btn-success">
+            Novo produto
+        </a>
+    {% endif %}
+</div>
+
+<form method="get" class="card p-3 mb-4">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label for="q" class="form-label">Buscar por nome</label>
+            <input
+                type="text"
+                class="form-control"
+                id="q"
+                name="q"
+                value="{{ filtros.q }}"
+                placeholder="Ex: tomate, cafe, leite"
+            >
+        </div>
+
+        <div class="col-md-3">
+            <label for="categoria" class="form-label">Categoria</label>
+            <select class="form-select" id="categoria" name="categoria">
+                <option value="">Todas</option>
+                {% for categoria in categorias %}
+                    <option value="{{ categoria.id }}" {% if filtros.categoria == categoria.id|stringformat:"s" %}selected{% endif %}>
+                        {{ categoria.nome }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label for="regiao" class="form-label">Regiao</label>
+            <input
+                type="text"
+                class="form-control"
+                id="regiao"
+                name="regiao"
+                value="{{ filtros.regiao }}"
+                placeholder="Cidade, estado ou regiao"
+            >
+        </div>
+
+        <div class="col-md-2">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select" id="status" name="status">
+                <option value="">Todos</option>
+                {% for valor, rotulo in status_choices %}
+                    <option value="{{ valor }}" {% if filtros.status == valor %}selected{% endif %}>
+                        {{ rotulo }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+            <button type="submit" class="btn btn-success">Filtrar</button>
+            <a href="{% url 'marketplace:lista_produtos' %}" class="btn btn-outline-secondary">Limpar</a>
+        </div>
+    </div>
+</form>
+
+{% if produtos %}
+    <div class="row g-4">
+        {% for produto in produtos %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    {% if produto.imagem %}
+                        <img
+                            src="{{ produto.imagem.url }}"
+                            class="card-img-top"
+                            alt="{{ produto.nome }}"
+                            style="height: 200px; object-fit: cover;"
+                        >
+                    {% endif %}
+
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between gap-2 mb-2">
+                            <span class="badge bg-success-subtle text-success">
+                                {{ produto.categoria.nome }}
+                            </span>
+                            <span class="badge bg-secondary">
+                                {{ produto.get_status_display }}
+                            </span>
+                        </div>
+
+                        <h2 class="h5 card-title">{{ produto.nome }}</h2>
+                        <p class="card-text text-muted mb-2">
+                            {{ produto.produtor.nome_negocio }}
+                        </p>
+                        <p class="card-text">
+                            {{ produto.descricao|truncatewords:18 }}
+                        </p>
+
+                        <div class="mt-auto">
+                            <p class="mb-1">
+                                <strong>Quantidade:</strong>
+                                {{ produto.quantidade_disponivel }} {{ produto.unidade_medida }}
+                            </p>
+                            <p class="mb-3">
+                                <strong>Preco:</strong>
+                                R$ {{ produto.preco }}
+                            </p>
+                            <a href="{% url 'marketplace:detalhe_produto' produto.id %}" class="btn btn-outline-success w-100">
+                                Ver detalhes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        Nenhum produto encontrado com os filtros selecionados.
+    </div>
+{% endif %}
+{% endblock %}

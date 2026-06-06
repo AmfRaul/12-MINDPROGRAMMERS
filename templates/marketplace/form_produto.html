@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="mb-4">
+            <h1 class="h2">Novo produto</h1>
+            <p class="text-muted mb-0">
+                Cadastre um produto para aparecer no marketplace da FieldReach.
+            </p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="card p-4 shadow-sm">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-success" type="submit">
+                    Salvar produto
+                </button>
+                <a href="{% url 'marketplace:lista_produtos' %}" class="btn btn-outline-secondary">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
