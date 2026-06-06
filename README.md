@@ -2,7 +2,7 @@
 
 FieldReach e uma aplicacao web em Django para conectar produtores rurais e compradores. O MVP permite que produtores cadastrem produtos, recebam pedidos e aceitem ou recusem compras. Compradores podem navegar pelo marketplace, fazer pedidos e avaliar compras concluidas.
 
-## Video de pitch + pdf de apresentaçãp
+## Video de pitch + pdf de apresentação
 
 https://drive.google.com/drive/folders/1SYM9RGlC29ABjtBeEab4yIcAwJ-UJXOo
 
