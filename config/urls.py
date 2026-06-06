@@ -13,6 +13,8 @@ urlpatterns = [
 
     path("produtores/", include("produtores.urls")),
     path("marketplace/", include("marketplace.urls")),
+    path("pedidos/", include("pedidos.urls")),
+    path("avaliacoes/", include("avaliacoes.urls")),
 ]
 
 if settings.DEBUG:

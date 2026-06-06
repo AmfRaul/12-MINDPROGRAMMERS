@@ -45,9 +45,17 @@
                         Minha conta
                     </a>
 
+                    <a class="nav-link" href="{% url 'pedidos:meus_pedidos' %}">
+                        Pedidos
+                    </a>
+
                     {% if user.is_produtor %}
                         <a class="nav-link" href="{% url 'produtores:meu_perfil' %}">
                             Perfil produtor
+                        </a>
+
+                        <a class="nav-link" href="{% url 'marketplace:meus_produtos' %}">
+                            Meus produtos
                         </a>
 
                         <a class="nav-link" href="{% url 'marketplace:criar_produto' %}">

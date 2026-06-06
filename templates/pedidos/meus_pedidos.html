@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="h2 mb-4">Pedidos</h1>
+
+<div class="mb-5">
+    <h2 class="h4">Pedidos que fiz</h2>
+
+    {% if pedidos_comprador %}
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                        <th>Status</th>
+                        <th>Valor estimado</th>
+                        <th class="text-end">Acoes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pedidos_comprador %}
+                        <tr>
+                            <td>{{ pedido.produto.nome }}</td>
+                            <td>{{ pedido.quantidade }} {{ pedido.produto.unidade_medida }}</td>
+                            <td>{{ pedido.get_status_display }}</td>
+                            <td>R$ {{ pedido.valor_estimado }}</td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'marketplace:detalhe_produto' pedido.produto.id %}" class="btn btn-outline-success">
+                                        Produto
+                                    </a>
+                                    {% if pedido.status == "concluido" and not pedido.avaliacao %}
+                                        <a href="{% url 'avaliacoes:avaliar_pedido' pedido.id %}" class="btn btn-outline-secondary">
+                                            Avaliar
+                                        </a>
+                                    {% elif pedido.avaliacao %}
+                                        <span class="btn btn-outline-secondary disabled">
+                                            Avaliado
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Voce ainda nao fez pedidos.
+        </div>
+    {% endif %}
+</div>
+
+{% if user.is_produtor %}
+    <div>
+        <h2 class="h4">Pedidos recebidos</h2>
+
+        {% if pedidos_produtor %}
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Comprador</th>
+                            <th>Quantidade</th>
+                            <th>Status</th>
+                            <th class="text-end">Acoes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pedido in pedidos_produtor %}
+                            <tr>
+                                <td>{{ pedido.produto.nome }}</td>
+                                <td>{{ pedido.comprador.username }}</td>
+                                <td>{{ pedido.quantidade }} {{ pedido.produto.unidade_medida }}</td>
+                                <td>{{ pedido.get_status_display }}</td>
+                                <td class="text-end">
+                                    <a href="{% url 'pedidos:atualizar_status' pedido.id %}" class="btn btn-sm btn-outline-success">
+                                        Atualizar
+                                    </a>
+                                </td>
+                            </tr>
+                            {% if pedido.mensagem %}
+                                <tr>
+                                    <td colspan="5" class="text-muted">
+                                        Mensagem: {{ pedido.mensagem }}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                Voce ainda nao recebeu pedidos.
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

@@ -37,6 +37,13 @@
             Oferecido por <strong>{{ produto.produtor.nome_negocio }}</strong>
         </p>
 
+        {% if media_avaliacoes %}
+            <p class="text-muted">
+                Media das avaliacoes:
+                <strong>{{ media_avaliacoes|floatformat:1 }}/5</strong>
+            </p>
+        {% endif %}
+
         <p>{{ produto.descricao }}</p>
 
         <div class="card p-4 my-4">
@@ -85,6 +92,51 @@
                 </p>
             {% endif %}
         </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            {% if user.is_authenticated and produto.produtor.user == user %}
+                <a href="{% url 'marketplace:editar_produto' produto.id %}" class="btn btn-success">
+                    Editar produto
+                </a>
+                <a href="{% url 'marketplace:excluir_produto' produto.id %}" class="btn btn-outline-danger">
+                    Excluir produto
+                </a>
+            {% elif user.is_authenticated %}
+                <a href="{% url 'pedidos:criar_pedido' produto.id %}" class="btn btn-success">
+                    Fazer pedido
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-success">
+                    Entrar para fazer pedido
+                </a>
+            {% endif %}
+        </div>
     </div>
+</div>
+
+<div class="mt-5">
+    <h2 class="h4">Avaliacoes</h2>
+
+    {% if avaliacoes %}
+        <div class="row g-3">
+            {% for pedido in avaliacoes %}
+                <div class="col-md-6">
+                    <div class="card p-3 h-100">
+                        <p class="mb-1">
+                            <strong>{{ pedido.avaliacao.nota }}/5</strong>
+                        </p>
+                        <p class="mb-1">{{ pedido.avaliacao.comentario|default:"Sem comentario." }}</p>
+                        <p class="text-muted mb-0">
+                            Por {{ pedido.comprador.username }}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Este produto ainda nao possui avaliacoes.
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -4,22 +4,22 @@
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="mb-4">
-            <h1 class="h2">{{ titulo|default:"Produto" }}</h1>
+            <h1 class="h2">Fazer pedido</h1>
             <p class="text-muted mb-0">
-                Cadastre um produto para aparecer no marketplace da FieldReach.
+                Produto: <strong>{{ produto.nome }}</strong>
             </p>
         </div>
 
-        <form method="post" enctype="multipart/form-data" class="card p-4 shadow-sm">
+        <form method="post" class="card p-4 shadow-sm">
             {% csrf_token %}
 
             {{ form.as_p }}
 
             <div class="d-flex gap-2">
                 <button class="btn btn-success" type="submit">
-                    {{ botao|default:"Salvar produto" }}
+                    Enviar pedido
                 </button>
-                <a href="{% if produto %}{% url 'marketplace:detalhe_produto' produto.id %}{% else %}{% url 'marketplace:lista_produtos' %}{% endif %}" class="btn btn-outline-secondary">
+                <a href="{% url 'marketplace:detalhe_produto' produto.id %}" class="btn btn-outline-secondary">
                     Cancelar
                 </a>
             </div>

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="h2 mb-1">Meus produtos</h1>
+        <p class="text-muted mb-0">
+            Gerencie os produtos que aparecem no marketplace.
+        </p>
+    </div>
+
+    <a href="{% url 'marketplace:criar_produto' %}" class="btn btn-success">
+        Novo produto
+    </a>
+</div>
+
+{% if produtos %}
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Categoria</th>
+                    <th>Quantidade</th>
+                    <th>Preco</th>
+                    <th>Status</th>
+                    <th class="text-end">Acoes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos %}
+                    <tr>
+                        <td>{{ produto.nome }}</td>
+                        <td>{{ produto.categoria.nome }}</td>
+                        <td>{{ produto.quantidade_disponivel }} {{ produto.unidade_medida }}</td>
+                        <td>R$ {{ produto.preco }}</td>
+                        <td>{{ produto.get_status_display }}</td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'marketplace:detalhe_produto' produto.id %}" class="btn btn-outline-success">
+                                    Ver
+                                </a>
+                                <a href="{% url 'marketplace:editar_produto' produto.id %}" class="btn btn-outline-secondary">
+                                    Editar
+                                </a>
+                                <a href="{% url 'marketplace:excluir_produto' produto.id %}" class="btn btn-outline-danger">
+                                    Excluir
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        Voce ainda nao cadastrou produtos.
+    </div>
+{% endif %}
+{% endblock %}
