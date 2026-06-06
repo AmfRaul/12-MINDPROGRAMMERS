@@ -55,32 +55,48 @@
 
             <div class="navbar-nav ms-auto align-items-lg-center">
                 {% if user.is_authenticated %}
-                    <a class="nav-link user-chip" href="{% url 'accounts:perfil' %}">
-                        <i class="bi bi-person-circle"></i>
-                        <span>{{ user.username }}</span>
-                    </a>
-
-                    <a class="nav-link" href="{% url 'pedidos:meus_pedidos' %}">
-                        <i class="bi bi-receipt"></i>
-                        <span>Pedidos</span>
-                    </a>
-
-                    {% if user.is_produtor %}
-                        <a class="nav-link" href="{% url 'produtores:meu_perfil' %}">
-                            <i class="bi bi-person-badge"></i>
-                            <span>Perfil produtor</span>
+                    <div class="nav-item dropdown profile-menu">
+                        <a
+                            class="nav-link user-chip dropdown-toggle"
+                            href="{% url 'accounts:perfil' %}"
+                            id="profileMenu"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            <i class="bi bi-person-circle"></i>
+                            <span>{{ user.username }}</span>
                         </a>
 
-                        <a class="nav-link" href="{% url 'marketplace:meus_produtos' %}">
-                            <i class="bi bi-basket"></i>
-                            <span>Meus produtos</span>
-                        </a>
+                        <div class="dropdown-menu dropdown-menu-end profile-dropdown" aria-labelledby="profileMenu">
+                            <a class="dropdown-item" href="{% url 'accounts:perfil' %}">
+                                <i class="bi bi-person"></i>
+                                Minha conta
+                            </a>
 
-                        <a class="nav-link" href="{% url 'marketplace:criar_produto' %}">
-                            <i class="bi bi-plus-circle"></i>
-                            <span>Novo produto</span>
-                        </a>
-                    {% endif %}
+                            <a class="dropdown-item" href="{% url 'pedidos:meus_pedidos' %}">
+                                <i class="bi bi-receipt"></i>
+                                Pedidos
+                            </a>
+
+                            {% if user.is_produtor %}
+                                <a class="dropdown-item" href="{% url 'produtores:meu_perfil' %}">
+                                    <i class="bi bi-person-badge"></i>
+                                    Perfil produtor
+                                </a>
+
+                                <a class="dropdown-item" href="{% url 'marketplace:meus_produtos' %}">
+                                    <i class="bi bi-basket"></i>
+                                    Meus produtos
+                                </a>
+
+                                <a class="dropdown-item" href="{% url 'marketplace:criar_produto' %}">
+                                    <i class="bi bi-plus-circle"></i>
+                                    Novo produto
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
 
                     <form method="post" action="{% url 'logout' %}" class="d-inline ms-lg-2">
                         {% csrf_token %}

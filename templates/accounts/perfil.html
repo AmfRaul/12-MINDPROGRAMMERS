@@ -1,12 +1,80 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Minha conta</h2>
+<section class="profile-page">
+    <div class="profile-container">
+        <div class="profile-heading">
+            <h1>Perfil da Conta</h1>
+            <p>Gerencie suas informações e preferências de compra.</p>
+        </div>
 
-<div class="card p-4">
-    <p><strong>Usuário:</strong> {{ user.username }}</p>
-    <p><strong>E-mail:</strong> {{ user.email }}</p>
-    <p><strong>Tipo de conta:</strong> {{ user.get_tipo_conta_display }}</p>
-    <p><strong>Telefone:</strong> {{ user.telefone }}</p>
-</div>
+        <div class="profile-card">
+            <h2>Informações Pessoais</h2>
+
+            <div class="profile-divider"></div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="profile-field">
+                        <p>
+                            <i class="bi bi-person"></i>
+                            Nome de usuário
+                        </p>
+                        <strong>{{ user.username }}</strong>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="profile-field">
+                        <p>
+                            <i class="bi bi-envelope"></i>
+                            E-mail
+                        </p>
+                        <strong>{{ user.email|default:"Não informado" }}</strong>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="profile-field">
+                        <p>
+                            <i class="bi bi-telephone"></i>
+                            Telefone
+                        </p>
+                        <strong>{{ user.telefone|default:"Não informado" }}</strong>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="profile-field">
+                        <p>
+                            <i class="bi bi-clipboard-data"></i>
+                            Tipo de conta
+                        </p>
+                        <strong>{{ user.get_tipo_conta_display }}</strong>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="profile-field">
+                        <p>
+                            <i class="bi bi-geo-alt"></i>
+                            Endereço de entrega principal
+                        </p>
+                        <strong>Não informado</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="{% url 'pedidos:meus_pedidos' %}" class="profile-action-card">
+            <span class="profile-action-icon">
+                <i class="bi bi-clock-history"></i>
+            </span>
+            <span>
+                <strong>Histórico de Pedidos</strong>
+                <small>Veja suas últimas compras</small>
+            </span>
+        </a>
+    </div>
+</section>
 {% endblock %}
