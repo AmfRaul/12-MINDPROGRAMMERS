@@ -1,0 +1,41 @@
+{% load form_tags %}
+
+{% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        {{ form.non_field_errors }}
+    </div>
+{% endif %}
+
+{% for field in form %}
+    {% if field|is_checkbox %}
+        <div class="form-check mb-3">
+            {{ field|add_class:"form-check-input" }}
+            <label class="form-check-label" for="{{ field.id_for_label }}">
+                {{ field.label }}
+            </label>
+            {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+            {% for error in field.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="mb-3">
+            <label class="form-label" for="{{ field.id_for_label }}">
+                {{ field.label }}
+            </label>
+            {% if field|is_select %}
+                {{ field|add_class:"form-select" }}
+            {% else %}
+                {{ field|add_class:"form-control" }}
+            {% endif %}
+            {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+            {% for error in field.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endfor %}

@@ -108,11 +108,11 @@
                         <div class="mt-auto">
                             <p class="mb-1">
                                 <strong>Quantidade:</strong>
-                                {{ produto.quantidade_disponivel }} {{ produto.unidade_medida }}
+                                {{ produto.quantidade_disponivel|floatformat:"-2" }} {{ produto.unidade_medida }}
                             </p>
                             <p class="mb-3">
                                 <strong>Preco:</strong>
-                                R$ {{ produto.preco }}
+                                R$ {{ produto.preco|floatformat:2 }}
                             </p>
                             <a href="{% url 'marketplace:detalhe_produto' produto.id %}" class="btn btn-outline-success w-100">
                                 Ver detalhes

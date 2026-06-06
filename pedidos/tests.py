@@ -91,7 +91,22 @@ class PedidoFluxoTests(TestCase):
         )
         self.assertEqual(Pedido.objects.count(), 0)
 
-    def test_produtor_dono_atualiza_status_e_comprador_avalia(self):
+    def test_pedido_nao_permite_quantidade_maior_que_disponivel(self):
+        self.client.login(username="comprador", password="senha-forte-123")
+
+        response = self.client.post(
+            reverse("pedidos:criar_pedido", args=[self.produto.id]),
+            {
+                "quantidade": "999.00",
+                "mensagem": "Quero comprar tudo.",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "maior que a disponivel")
+        self.assertEqual(Pedido.objects.count(), 0)
+
+    def test_produtor_dono_aceita_conclui_e_comprador_avalia(self):
         pedido = Pedido.objects.create(
             comprador=self.comprador,
             produto=self.produto,
@@ -100,8 +115,14 @@ class PedidoFluxoTests(TestCase):
 
         self.client.login(username="produtor", password="senha-forte-123")
         response = self.client.post(
-            reverse("pedidos:atualizar_status", args=[pedido.id]),
-            {"status": Pedido.StatusPedido.CONCLUIDO},
+            reverse("pedidos:decidir_pedido", args=[pedido.id, "aceitar"]),
+        )
+        self.assertRedirects(response, reverse("pedidos:meus_pedidos"))
+        pedido.refresh_from_db()
+        self.assertEqual(pedido.status, Pedido.StatusPedido.ACEITO)
+
+        response = self.client.post(
+            reverse("pedidos:concluir_pedido", args=[pedido.id]),
         )
         self.assertRedirects(response, reverse("pedidos:meus_pedidos"))
         pedido.refresh_from_db()
@@ -117,6 +138,22 @@ class PedidoFluxoTests(TestCase):
         )
         self.assertRedirects(response, reverse("pedidos:meus_pedidos"))
         self.assertEqual(Avaliacao.objects.count(), 1)
+
+    def test_produtor_dono_recusa_pedido_pendente(self):
+        pedido = Pedido.objects.create(
+            comprador=self.comprador,
+            produto=self.produto,
+            quantidade="8.00",
+        )
+
+        self.client.login(username="produtor", password="senha-forte-123")
+        response = self.client.post(
+            reverse("pedidos:decidir_pedido", args=[pedido.id, "recusar"]),
+        )
+
+        self.assertRedirects(response, reverse("pedidos:meus_pedidos"))
+        pedido.refresh_from_db()
+        self.assertEqual(pedido.status, Pedido.StatusPedido.RECUSADO)
 
     def test_apenas_dono_edita_produto(self):
         self.client.login(username="outroprodutor", password="senha-forte-123")

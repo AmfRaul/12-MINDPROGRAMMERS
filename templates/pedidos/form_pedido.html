@@ -5,15 +5,40 @@
     <div class="col-lg-8">
         <div class="mb-4">
             <h1 class="h2">Fazer pedido</h1>
-            <p class="text-muted mb-0">
-                Produto: <strong>{{ produto.nome }}</strong>
-            </p>
+        </div>
+
+        <div class="card p-4 mb-4">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <p class="text-muted mb-1">Produto</p>
+                    <p class="fw-semibold mb-0">{{ produto.nome }}</p>
+                </div>
+
+                <div class="col-md-6">
+                    <p class="text-muted mb-1">Produtor</p>
+                    <p class="fw-semibold mb-0">{{ produto.produtor.nome_negocio }}</p>
+                </div>
+
+                <div class="col-md-6">
+                    <p class="text-muted mb-1">Quantidade disponivel</p>
+                    <p class="fw-semibold mb-0">
+                        {{ produto.quantidade_disponivel|floatformat:"-2" }} {{ produto.unidade_medida }}
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <p class="text-muted mb-1">Preco</p>
+                    <p class="fw-semibold mb-0">
+                        R$ {{ produto.preco|floatformat:2 }} / {{ produto.unidade_medida }}
+                    </p>
+                </div>
+            </div>
         </div>
 
         <form method="post" class="card p-4 shadow-sm">
             {% csrf_token %}
 
-            {{ form.as_p }}
+            {% include "partials/form_fields.html" %}
 
             <div class="d-flex gap-2">
                 <button class="btn btn-success" type="submit">

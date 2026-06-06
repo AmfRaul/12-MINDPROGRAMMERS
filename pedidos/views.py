@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from marketplace.models import Produto
 
-from .forms import AtualizarStatusPedidoForm, PedidoForm
+from .forms import PedidoForm
 from .models import Pedido
 
 
@@ -21,7 +21,7 @@ def criar_pedido(request, produto_id):
         return redirect("marketplace:detalhe_produto", id=produto.id)
 
     if request.method == "POST":
-        form = PedidoForm(request.POST)
+        form = PedidoForm(request.POST, produto=produto)
 
         if form.is_valid():
             pedido = form.save(commit=False)
@@ -32,7 +32,7 @@ def criar_pedido(request, produto_id):
             messages.success(request, "Pedido enviado ao produtor.")
             return redirect("pedidos:meus_pedidos")
     else:
-        form = PedidoForm()
+        form = PedidoForm(produto=produto)
 
     return render(
         request,
@@ -72,32 +72,64 @@ def meus_pedidos(request):
     )
 
 
-@login_required
-def atualizar_status_pedido(request, pedido_id):
+def _get_pedido_do_produtor(request, pedido_id):
     pedido = get_object_or_404(
         Pedido.objects.select_related("produto", "produto__produtor"),
         id=pedido_id,
     )
 
     if not request.user.is_produtor or pedido.produto.produtor.user != request.user:
-        messages.error(request, "Voce nao tem permissao para atualizar este pedido.")
+        return None
+
+    return pedido
+
+
+@login_required
+def decidir_pedido(request, pedido_id, acao):
+    if request.method != "POST":
         return redirect("pedidos:meus_pedidos")
 
-    if request.method == "POST":
-        form = AtualizarStatusPedidoForm(request.POST, instance=pedido)
+    pedido = _get_pedido_do_produtor(request, pedido_id)
 
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Status do pedido atualizado.")
-            return redirect("pedidos:meus_pedidos")
+    if pedido is None:
+        messages.error(request, "Voce nao tem permissao para decidir este pedido.")
+        return redirect("pedidos:meus_pedidos")
+
+    if pedido.status != Pedido.StatusPedido.PENDENTE:
+        messages.warning(request, "Este pedido ja foi decidido.")
+        return redirect("pedidos:meus_pedidos")
+
+    if acao == "aceitar":
+        pedido.status = Pedido.StatusPedido.ACEITO
+        pedido.save(update_fields=["status", "atualizado_em"])
+        messages.success(request, "Pedido aceito com sucesso.")
+    elif acao == "recusar":
+        pedido.status = Pedido.StatusPedido.RECUSADO
+        pedido.save(update_fields=["status", "atualizado_em"])
+        messages.success(request, "Pedido recusado.")
     else:
-        form = AtualizarStatusPedidoForm(instance=pedido)
+        messages.error(request, "Acao invalida para este pedido.")
 
-    return render(
-        request,
-        "pedidos/atualizar_status.html",
-        {
-            "form": form,
-            "pedido": pedido,
-        },
-    )
+    return redirect("pedidos:meus_pedidos")
+
+
+@login_required
+def concluir_pedido(request, pedido_id):
+    if request.method != "POST":
+        return redirect("pedidos:meus_pedidos")
+
+    pedido = _get_pedido_do_produtor(request, pedido_id)
+
+    if pedido is None:
+        messages.error(request, "Voce nao tem permissao para concluir este pedido.")
+        return redirect("pedidos:meus_pedidos")
+
+    if pedido.status != Pedido.StatusPedido.ACEITO:
+        messages.warning(request, "Apenas pedidos aceitos podem ser concluidos.")
+        return redirect("pedidos:meus_pedidos")
+
+    pedido.status = Pedido.StatusPedido.CONCLUIDO
+    pedido.save(update_fields=["status", "atualizado_em"])
+    messages.success(request, "Pedido concluido.")
+
+    return redirect("pedidos:meus_pedidos")

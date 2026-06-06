@@ -51,13 +51,13 @@
                 <div class="col-sm-6">
                     <p class="mb-1 text-muted">Quantidade disponivel</p>
                     <p class="mb-0 fw-semibold">
-                        {{ produto.quantidade_disponivel }} {{ produto.unidade_medida }}
+                        {{ produto.quantidade_disponivel|floatformat:"-2" }} {{ produto.unidade_medida }}
                     </p>
                 </div>
 
                 <div class="col-sm-6">
                     <p class="mb-1 text-muted">Preco</p>
-                    <p class="mb-0 fw-semibold">R$ {{ produto.preco }}</p>
+                    <p class="mb-0 fw-semibold">R$ {{ produto.preco|floatformat:2 }}</p>
                 </div>
 
                 <div class="col-sm-6">

@@ -22,9 +22,9 @@
                     {% for pedido in pedidos_comprador %}
                         <tr>
                             <td>{{ pedido.produto.nome }}</td>
-                            <td>{{ pedido.quantidade }} {{ pedido.produto.unidade_medida }}</td>
+                            <td>{{ pedido.quantidade|floatformat:"-2" }} {{ pedido.produto.unidade_medida }}</td>
                             <td>{{ pedido.get_status_display }}</td>
-                            <td>R$ {{ pedido.valor_estimado }}</td>
+                            <td>R$ {{ pedido.valor_estimado|floatformat:2 }}</td>
                             <td class="text-end">
                                 <div class="btn-group btn-group-sm">
                                     <a href="{% url 'marketplace:detalhe_produto' pedido.produto.id %}" class="btn btn-outline-success">
@@ -74,12 +74,35 @@
                             <tr>
                                 <td>{{ pedido.produto.nome }}</td>
                                 <td>{{ pedido.comprador.username }}</td>
-                                <td>{{ pedido.quantidade }} {{ pedido.produto.unidade_medida }}</td>
+                                <td>{{ pedido.quantidade|floatformat:"-2" }} {{ pedido.produto.unidade_medida }}</td>
                                 <td>{{ pedido.get_status_display }}</td>
                                 <td class="text-end">
-                                    <a href="{% url 'pedidos:atualizar_status' pedido.id %}" class="btn btn-sm btn-outline-success">
-                                        Atualizar
-                                    </a>
+                                    {% if pedido.status == "pendente" %}
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <form method="post" action="{% url 'pedidos:decidir_pedido' pedido.id 'aceitar' %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    Aceitar
+                                                </button>
+                                            </form>
+
+                                            <form method="post" action="{% url 'pedidos:decidir_pedido' pedido.id 'recusar' %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    Recusar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    {% elif pedido.status == "aceito" %}
+                                        <form method="post" action="{% url 'pedidos:concluir_pedido' pedido.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                                Marcar concluido
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <span class="text-muted">Sem acao</span>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% if pedido.mensagem %}

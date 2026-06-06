@@ -4,6 +4,10 @@ from .models import Pedido
 
 
 class PedidoForm(forms.ModelForm):
+    def __init__(self, *args, produto=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.produto = produto
+
     class Meta:
         model = Pedido
         fields = [
@@ -18,11 +22,18 @@ class PedidoForm(forms.ModelForm):
             "mensagem": forms.Textarea(attrs={"rows": 4}),
         }
 
+    def clean_quantidade(self):
+        quantidade = self.cleaned_data.get("quantidade")
 
-class AtualizarStatusPedidoForm(forms.ModelForm):
-    class Meta:
-        model = Pedido
-        fields = ["status"]
-        labels = {
-            "status": "Status do pedido",
-        }
+        if quantidade is None:
+            return quantidade
+
+        if quantidade <= 0:
+            raise forms.ValidationError("Informe uma quantidade maior que zero.")
+
+        if self.produto and quantidade > self.produto.quantidade_disponivel:
+            raise forms.ValidationError(
+                "A quantidade solicitada nao pode ser maior que a disponivel."
+            )
+
+        return quantidade

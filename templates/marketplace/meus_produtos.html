@@ -32,8 +32,8 @@
                     <tr>
                         <td>{{ produto.nome }}</td>
                         <td>{{ produto.categoria.nome }}</td>
-                        <td>{{ produto.quantidade_disponivel }} {{ produto.unidade_medida }}</td>
-                        <td>R$ {{ produto.preco }}</td>
+                        <td>{{ produto.quantidade_disponivel|floatformat:"-2" }} {{ produto.unidade_medida }}</td>
+                        <td>R$ {{ produto.preco|floatformat:2 }}</td>
                         <td>{{ produto.get_status_display }}</td>
                         <td class="text-end">
                             <div class="btn-group btn-group-sm">

@@ -4,17 +4,16 @@
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="mb-4">
-            <h2>Meu perfil de produtor</h2>
-            <p class="text-muted">
-                Preencha as informações da sua propriedade ou negócio rural.
-                Esses dados serão usados futuramente no marketplace da FieldReach.
+            <h1 class="h2">Meu perfil de produtor</h1>
+            <p class="text-muted mb-0">
+                Preencha as informacoes da sua propriedade ou negocio rural.
             </p>
         </div>
 
         <form method="post" enctype="multipart/form-data" class="card p-4 shadow-sm">
             {% csrf_token %}
 
-            {{ form.as_p }}
+            {% include "partials/form_fields.html" %}
 
             <button class="btn btn-success" type="submit">
                 Salvar perfil
@@ -23,7 +22,7 @@
 
         {% if perfil %}
             <div class="card p-4 mt-4">
-                <h4>Resumo do perfil</h4>
+                <h2 class="h4">Resumo do perfil</h2>
 
                 <p>
                     <strong>Nome:</strong>
@@ -36,24 +35,24 @@
                 </p>
 
                 <p>
-                    <strong>Tipo de produção:</strong>
+                    <strong>Tipo de producao:</strong>
                     {{ perfil.tipo_producao }}
                 </p>
 
                 <p>
-                    <strong>Capacidade de produção:</strong>
-                    {{ perfil.capacidade_producao|default:"Não informada" }}
+                    <strong>Capacidade de producao:</strong>
+                    {{ perfil.capacidade_producao|default:"Nao informada" }}
                 </p>
 
                 <p>
                     <strong>Contato comercial:</strong>
-                    {{ perfil.contato_comercial|default:"Não informado" }}
+                    {{ perfil.contato_comercial|default:"Nao informado" }}
                 </p>
 
                 {% if perfil.foto %}
-                    <img 
-                        src="{{ perfil.foto.url }}" 
-                        alt="{{ perfil.nome_negocio }}" 
+                    <img
+                        src="{{ perfil.foto.url }}"
+                        alt="{{ perfil.nome_negocio }}"
                         class="img-fluid rounded mt-3"
                         style="max-width: 300px;"
                     >
