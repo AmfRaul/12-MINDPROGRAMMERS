@@ -19,7 +19,7 @@ class CadastroUsuarioForm(UserCreationForm):
         ]
 
         labels = {
-            "username": "Nome de usuario",
+            "username": "Nome de usuário",
             "telefone": "Telefone",
             "tipo_conta": "Tipo de conta",
         }
@@ -28,6 +28,6 @@ class CadastroUsuarioForm(UserCreationForm):
         email = self.cleaned_data.get("email")
 
         if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("Ja existe uma conta com este e-mail.")
+            raise forms.ValidationError("Já existe uma conta com este e-mail.")
 
         return email

@@ -26,8 +26,8 @@ class Avaliacao(models.Model):
     criado_em = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "Avaliacao"
-        verbose_name_plural = "Avaliacoes"
+        verbose_name = "Avaliação"
+        verbose_name_plural = "Avaliações"
         ordering = ["-criado_em"]
 
     def __str__(self):

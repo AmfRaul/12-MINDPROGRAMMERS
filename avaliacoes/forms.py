@@ -12,7 +12,7 @@ class AvaliacaoForm(forms.ModelForm):
         ]
         labels = {
             "nota": "Nota",
-            "comentario": "Comentario",
+            "comentario": "Comentário",
         }
         widgets = {
             "comentario": forms.Textarea(attrs={"rows": 4}),

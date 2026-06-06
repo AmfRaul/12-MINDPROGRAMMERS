@@ -33,7 +33,7 @@ class PedidoForm(forms.ModelForm):
 
         if self.produto and quantidade > self.produto.quantidade_disponivel:
             raise forms.ValidationError(
-                "A quantidade solicitada nao pode ser maior que a disponivel."
+                "A quantidade solicitada não pode ser maior que a disponível."
             )
 
         return quantidade

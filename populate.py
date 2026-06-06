@@ -1,4 +1,6 @@
 import os
+import shutil
+import urllib.request
 from datetime import date, timedelta
 from decimal import Decimal
 
@@ -7,7 +9,9 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
 
+from django.conf import settings  # noqa: E402
 from django.contrib.auth import get_user_model  # noqa: E402
+from PIL import Image  # noqa: E402
 
 from avaliacoes.models import Avaliacao  # noqa: E402
 from marketplace.models import CategoriaProduto, Produto  # noqa: E402
@@ -16,6 +20,26 @@ from produtores.models import PerfilProdutor  # noqa: E402
 
 
 PASSWORD = "senha12345"
+SEED_IMAGE_DIR = "marketplace/produtos/seed"
+
+PRODUCT_IMAGE_SOURCES = {
+    "alface": {
+        "filename": "alface-crespa.jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Lettuce_%284988502522%29.jpg",
+    },
+    "tomate": {
+        "filename": "tomate-italiano.jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Tomato_%281%29.jpg",
+    },
+    "morango": {
+        "filename": "morango-selecionado.jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Strawberries.jpg",
+    },
+    "queijo": {
+        "filename": "queijo-minas-artesanal.jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/32/Queijo_Minas_Frescal.JPG",
+    },
+}
 
 
 def reset_data():
@@ -25,6 +49,13 @@ def reset_data():
     CategoriaProduto.objects.all().delete()
     PerfilProdutor.objects.all().delete()
     get_user_model().objects.all().delete()
+
+    seed_path = settings.MEDIA_ROOT / SEED_IMAGE_DIR
+    if seed_path.exists():
+        for item in seed_path.glob("*"):
+            if item.is_file():
+                item.unlink(missing_ok=True)
+        shutil.rmtree(seed_path, ignore_errors=True)
 
 
 def create_user(username, email, tipo_conta, telefone="", is_staff=False, is_superuser=False):
@@ -40,6 +71,57 @@ def create_user(username, email, tipo_conta, telefone="", is_staff=False, is_sup
     user.is_superuser = is_superuser
     user.save()
     return user
+
+
+def download_real_product_image(key, source):
+    seed_path = settings.MEDIA_ROOT / SEED_IMAGE_DIR
+    seed_path.mkdir(parents=True, exist_ok=True)
+
+    output_path = seed_path / source["filename"]
+    request = urllib.request.Request(
+        source["url"],
+        headers={"User-Agent": "FieldReach seed script/1.0"},
+    )
+
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            with open(output_path, "wb") as image_file:
+                image_file.write(response.read())
+    except Exception as exc:
+        raise RuntimeError(
+            f"Nao foi possivel baixar a foto real do produto '{key}'."
+        ) from exc
+
+    normalize_product_image(output_path)
+    return f"{SEED_IMAGE_DIR}/{source['filename']}"
+
+
+def normalize_product_image(path):
+    target_width, target_height = 1200, 760
+
+    with Image.open(path) as image:
+        image = image.convert("RGB")
+        image_ratio = image.width / image.height
+        target_ratio = target_width / target_height
+
+        if image_ratio > target_ratio:
+            new_width = int(image.height * target_ratio)
+            left = (image.width - new_width) // 2
+            image = image.crop((left, 0, left + new_width, image.height))
+        else:
+            new_height = int(image.width / target_ratio)
+            top = (image.height - new_height) // 2
+            image = image.crop((0, top, image.width, top + new_height))
+
+        image = image.resize((target_width, target_height), Image.Resampling.LANCZOS)
+        image.save(path, "JPEG", quality=88, optimize=True)
+
+
+def create_seed_images():
+    return {
+        key: download_real_product_image(key, source)
+        for key, source in PRODUCT_IMAGE_SOURCES.items()
+    }
 
 
 def create_data():
@@ -115,6 +197,8 @@ def create_data():
     )
 
     hoje = date.today()
+    imagens = create_seed_images()
+
     alface = Produto.objects.create(
         produtor=perfil_joao,
         categoria=verduras,
@@ -126,6 +210,7 @@ def create_data():
         regiao="Campinas - SP",
         data_disponibilidade=hoje,
         data_entrega_estimada=hoje + timedelta(days=2),
+        imagem=imagens["alface"],
     )
     tomate = Produto.objects.create(
         produtor=perfil_joao,
@@ -139,6 +224,7 @@ def create_data():
         data_disponibilidade=hoje + timedelta(days=1),
         data_entrega_estimada=hoje + timedelta(days=3),
         status=Produto.StatusProduto.SOB_ENCOMENDA,
+        imagem=imagens["tomate"],
     )
     morango = Produto.objects.create(
         produtor=perfil_maria,
@@ -151,6 +237,7 @@ def create_data():
         regiao="Pouso Alegre - MG",
         data_disponibilidade=hoje,
         data_entrega_estimada=hoje + timedelta(days=4),
+        imagem=imagens["morango"],
     )
     queijo = Produto.objects.create(
         produtor=perfil_maria,
@@ -163,6 +250,7 @@ def create_data():
         regiao="Pouso Alegre - MG",
         data_disponibilidade=hoje + timedelta(days=2),
         data_entrega_estimada=hoje + timedelta(days=5),
+        imagem=imagens["queijo"],
     )
 
     pedido_concluido = Pedido.objects.create(
@@ -183,7 +271,7 @@ def create_data():
         comprador=comprador_ana,
         produto=queijo,
         quantidade=Decimal("10.00"),
-        mensagem="Pedido para empório local.",
+        mensagem="Pedido para emporio local.",
         status=Pedido.StatusPedido.ACEITO,
     )
 
@@ -222,6 +310,7 @@ def main():
         print(f"- {user.username}")
     print("")
     print("Produtos cadastrados:", len(data["produtos"]))
+    print("Fotos reais seed baixadas em:", settings.MEDIA_ROOT / SEED_IMAGE_DIR)
 
 
 if __name__ == "__main__":

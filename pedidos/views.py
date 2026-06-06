@@ -17,7 +17,7 @@ def criar_pedido(request, produto_id):
     )
 
     if request.user.is_produtor and produto.produtor.user == request.user:
-        messages.error(request, "Voce nao pode criar pedido para o proprio produto.")
+        messages.error(request, "Você não pode criar pedido para o próprio produto.")
         return redirect("marketplace:detalhe_produto", id=produto.id)
 
     if request.method == "POST":
@@ -92,11 +92,11 @@ def decidir_pedido(request, pedido_id, acao):
     pedido = _get_pedido_do_produtor(request, pedido_id)
 
     if pedido is None:
-        messages.error(request, "Voce nao tem permissao para decidir este pedido.")
+        messages.error(request, "Você não tem permissão para decidir este pedido.")
         return redirect("pedidos:meus_pedidos")
 
     if pedido.status != Pedido.StatusPedido.PENDENTE:
-        messages.warning(request, "Este pedido ja foi decidido.")
+        messages.warning(request, "Este pedido já foi decidido.")
         return redirect("pedidos:meus_pedidos")
 
     if acao == "aceitar":
@@ -121,15 +121,15 @@ def concluir_pedido(request, pedido_id):
     pedido = _get_pedido_do_produtor(request, pedido_id)
 
     if pedido is None:
-        messages.error(request, "Voce nao tem permissao para concluir este pedido.")
+        messages.error(request, "Você não tem permissão para concluir este pedido.")
         return redirect("pedidos:meus_pedidos")
 
     if pedido.status != Pedido.StatusPedido.ACEITO:
-        messages.warning(request, "Apenas pedidos aceitos podem ser concluidos.")
+        messages.warning(request, "Apenas pedidos aceitos podem ser concluídos.")
         return redirect("pedidos:meus_pedidos")
 
     pedido.status = Pedido.StatusPedido.CONCLUIDO
     pedido.save(update_fields=["status", "atualizado_em"])
-    messages.success(request, "Pedido concluido.")
+    messages.success(request, "Pedido concluído.")
 
     return redirect("pedidos:meus_pedidos")

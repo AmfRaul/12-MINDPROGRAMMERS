@@ -43,7 +43,7 @@
         </div>
 
         <div class="col-md-3">
-            <label for="regiao" class="form-label">Regiao</label>
+            <label for="regiao" class="form-label">Região</label>
             <input
                 type="text"
                 class="form-control"
@@ -111,7 +111,7 @@
                                 {{ produto.quantidade_disponivel|floatformat:"-2" }} {{ produto.unidade_medida }}
                             </p>
                             <p class="mb-3">
-                                <strong>Preco:</strong>
+                                <strong>Preço:</strong>
                                 R$ {{ produto.preco|floatformat:2 }}
                             </p>
                             <a href="{% url 'marketplace:detalhe_produto' produto.id %}" class="btn btn-outline-success w-100">

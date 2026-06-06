@@ -9,17 +9,17 @@
         <div class="hero-content">
             <div class="hero-badge">
                 <i class="bi bi-patch-check-fill"></i>
-                <span>Plataforma do Agronegocio Brasileiro</span>
+                <span>Plataforma do Agronegócio Brasileiro</span>
             </div>
 
             <h1 class="hero-title">
-                Conecte seu negocio
+                Conecte seu negócio
                 <span>ao campo real</span>
             </h1>
 
             <p class="hero-copy">
-                Produtores rurais e compradores em um unico lugar,
-                sem intermediarios, sem complicacao. Direto da fonte para voce.
+                Produtores rurais e compradores em um único lugar,
+                sem intermediários, sem complicação. Direto da fonte para você.
             </p>
 
             <div class="hero-actions">
@@ -154,7 +154,7 @@
                                         <th>Produto</th>
                                         <th>Comprador</th>
                                         <th>Status</th>
-                                        <th class="text-end">Acoes</th>
+                                        <th class="text-end">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -188,11 +188,11 @@
                                                     <form method="post" action="{% url 'pedidos:concluir_pedido' pedido.id %}">
                                                         {% csrf_token %}
                                                         <button type="submit" class="btn btn-sm btn-outline-success">
-                                                            Marcar concluido
+                                                            Marcar concluído
                                                         </button>
                                                     </form>
                                                 {% else %}
-                                                    <span class="text-muted small">Sem acao</span>
+                                                    <span class="text-muted small">Sem ação</span>
                                                 {% endif %}
                                             </td>
                                         </tr>
@@ -202,7 +202,7 @@
                         </div>
                     {% else %}
                         <div class="alert alert-info">
-                            Voce ainda nao recebeu pedidos.
+                            Você ainda não recebeu pedidos.
                         </div>
                     {% endif %}
                 {% else %}
@@ -248,7 +248,7 @@
                     </div>
                 {% else %}
                     <div class="alert alert-info">
-                        Voce ainda nao fez pedidos.
+                        Você ainda não fez pedidos.
                     </div>
                 {% endif %}
             {% endif %}
@@ -293,7 +293,7 @@
             </div>
         {% else %}
             <div class="alert alert-info">
-                Ainda nao ha produtos cadastrados.
+                Ainda não há produtos cadastrados.
             </div>
         {% endif %}
         </div>

@@ -19,8 +19,8 @@ class CategoriaProduto(models.Model):
 
 class Produto(models.Model):
     class StatusProduto(models.TextChoices):
-        DISPONIVEL = "disponivel", "Disponivel"
-        INDISPONIVEL = "indisponivel", "Indisponivel"
+        DISPONIVEL = "disponivel", "Disponível"
+        INDISPONIVEL = "indisponivel", "Indisponível"
         SOB_ENCOMENDA = "sob_encomenda", "Sob encomenda"
 
     produtor = models.ForeignKey(
@@ -37,8 +37,8 @@ class Produto(models.Model):
     descricao = models.TextField()
     quantidade_disponivel = models.DecimalField(max_digits=10, decimal_places=2)
     unidade_medida = models.CharField(max_length=30)
-    preco = models.DecimalField("preco", max_digits=10, decimal_places=2)
-    regiao = models.CharField("regiao", max_length=150)
+    preco = models.DecimalField("preço", max_digits=10, decimal_places=2)
+    regiao = models.CharField("região", max_length=150)
     data_disponibilidade = models.DateField()
     data_entrega_estimada = models.DateField(blank=True, null=True)
     imagem = models.ImageField(

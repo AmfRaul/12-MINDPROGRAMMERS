@@ -103,7 +103,7 @@ class PedidoFluxoTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "maior que a disponivel")
+        self.assertContains(response, "maior que a disponível")
         self.assertEqual(Pedido.objects.count(), 0)
 
     def test_produtor_dono_aceita_conclui_e_comprador_avalia(self):

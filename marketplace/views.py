@@ -73,7 +73,7 @@ def detalhe_produto(request, id):
 @login_required
 def criar_produto(request):
     if not request.user.is_produtor:
-        messages.error(request, "Apenas usuarios produtores podem cadastrar produtos.")
+        messages.error(request, "Apenas usuários produtores podem cadastrar produtos.")
         return redirect("marketplace:lista_produtos")
 
     try:
@@ -112,7 +112,7 @@ def criar_produto(request):
 @login_required
 def meus_produtos(request):
     if not request.user.is_produtor:
-        messages.error(request, "Apenas produtores podem acessar esta pagina.")
+        messages.error(request, "Apenas produtores podem acessar esta página.")
         return redirect("marketplace:lista_produtos")
 
     try:
@@ -140,7 +140,7 @@ def editar_produto(request, id):
     )
 
     if produto.produtor.user != request.user:
-        messages.error(request, "Voce nao tem permissao para editar este produto.")
+        messages.error(request, "Você não tem permissão para editar este produto.")
         return redirect("marketplace:lista_produtos")
 
     if request.method == "POST":
@@ -160,7 +160,7 @@ def editar_produto(request, id):
             "form": form,
             "produto": produto,
             "titulo": "Editar produto",
-            "botao": "Salvar alteracoes",
+            "botao": "Salvar alterações",
         },
     )
 
@@ -173,12 +173,12 @@ def excluir_produto(request, id):
     )
 
     if produto.produtor.user != request.user:
-        messages.error(request, "Voce nao tem permissao para excluir este produto.")
+        messages.error(request, "Você não tem permissão para excluir este produto.")
         return redirect("marketplace:lista_produtos")
 
     if request.method == "POST":
         produto.delete()
-        messages.success(request, "Produto excluido com sucesso.")
+        messages.success(request, "Produto excluído com sucesso.")
         return redirect("marketplace:meus_produtos")
 
     return render(

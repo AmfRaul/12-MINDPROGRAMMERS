@@ -9,7 +9,7 @@ class Pedido(models.Model):
         PENDENTE = "pendente", "Pendente"
         ACEITO = "aceito", "Aceito"
         RECUSADO = "recusado", "Recusado"
-        CONCLUIDO = "concluido", "Concluido"
+        CONCLUIDO = "concluido", "Concluído"
         CANCELADO = "cancelado", "Cancelado"
 
     comprador = models.ForeignKey(

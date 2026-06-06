@@ -15,7 +15,7 @@
                         <th>Quantidade</th>
                         <th>Status</th>
                         <th>Valor estimado</th>
-                        <th class="text-end">Acoes</th>
+                        <th class="text-end">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,7 +48,7 @@
         </div>
     {% else %}
         <div class="alert alert-info">
-            Voce ainda nao fez pedidos.
+            Você ainda não fez pedidos.
         </div>
     {% endif %}
 </div>
@@ -66,7 +66,7 @@
                             <th>Comprador</th>
                             <th>Quantidade</th>
                             <th>Status</th>
-                            <th class="text-end">Acoes</th>
+                            <th class="text-end">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -97,11 +97,11 @@
                                         <form method="post" action="{% url 'pedidos:concluir_pedido' pedido.id %}">
                                             {% csrf_token %}
                                             <button type="submit" class="btn btn-sm btn-outline-success">
-                                                Marcar concluido
+                                                Marcar concluído
                                             </button>
                                         </form>
                                     {% else %}
-                                        <span class="text-muted">Sem acao</span>
+                                        <span class="text-muted">Sem ação</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -118,7 +118,7 @@
             </div>
         {% else %}
             <div class="alert alert-info">
-                Voce ainda nao recebeu pedidos.
+                Você ainda não recebeu pedidos.
             </div>
         {% endif %}
     </div>

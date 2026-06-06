@@ -20,6 +20,7 @@ https://drive.google.com/drive/folders/1SYM9RGlC29ABjtBeEab4yIcAwJ-UJXOo
 - Dashboard responsivo por perfil de usuario.
 - Front-end com Bootstrap 5 e CSS customizado.
 - Script `populate.py` para criar dados de teste.
+- Fotos reais seed de produtos baixadas pelo `populate.py` e salvas em `media/`.
 
 ## Tecnologias
 
@@ -79,6 +80,14 @@ Popule o banco com dados de teste:
 ```powershell
 python populate.py
 ```
+
+O script tambem baixa fotos reais seed para os produtos e salva em:
+
+```text
+media/marketplace/produtos/seed/
+```
+
+Essas imagens ficam associadas ao campo `imagem` dos produtos. O front-end apenas renderiza a imagem cadastrada no banco.
 
 Inicie o servidor:
 

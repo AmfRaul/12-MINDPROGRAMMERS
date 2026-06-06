@@ -1,19 +1,45 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-6">
-        <h1 class="h2">Entrar</h1>
+{% block body_class %}auth-page{% endblock %}
+{% block main_class %}auth-main{% endblock %}
 
-        <form method="post" class="card p-4 shadow-sm">
+{% block content %}
+<section class="auth-shell">
+    <div class="auth-card">
+        <div class="auth-heading">
+            <h1>Entrar na FieldReach</h1>
+            <p>
+                Acesse sua conta para acompanhar pedidos, produtos e oportunidades do marketplace.
+            </p>
+        </div>
+
+        <form method="post" class="auth-form">
             {% csrf_token %}
 
             {% include "partials/form_fields.html" %}
 
-            <button class="btn btn-success" type="submit">
+            <button class="btn btn-auth-primary" type="submit">
                 Entrar
+                <i class="bi bi-arrow-right"></i>
             </button>
         </form>
+
+        <p class="auth-footnote">
+            Ainda não tem conta?
+            <a href="{% url 'accounts:cadastro' %}">Criar conta</a>
+        </p>
     </div>
-</div>
+
+    <div class="auth-feature-row">
+        <div class="auth-feature-image">
+            <span>Conexão direta entre campo e mercado.</span>
+        </div>
+
+        <div class="auth-feature-stat">
+            <i class="bi bi-patch-check-fill"></i>
+            <strong>+15k</strong>
+            <span>Membros verificados</span>
+        </div>
+    </div>
+</section>
 {% endblock %}

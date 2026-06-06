@@ -49,19 +49,19 @@
         <div class="card p-4 my-4">
             <div class="row g-3">
                 <div class="col-sm-6">
-                    <p class="mb-1 text-muted">Quantidade disponivel</p>
+                    <p class="mb-1 text-muted">Quantidade disponível</p>
                     <p class="mb-0 fw-semibold">
                         {{ produto.quantidade_disponivel|floatformat:"-2" }} {{ produto.unidade_medida }}
                     </p>
                 </div>
 
                 <div class="col-sm-6">
-                    <p class="mb-1 text-muted">Preco</p>
+                    <p class="mb-1 text-muted">Preço</p>
                     <p class="mb-0 fw-semibold">R$ {{ produto.preco|floatformat:2 }}</p>
                 </div>
 
                 <div class="col-sm-6">
-                    <p class="mb-1 text-muted">Regiao</p>
+                    <p class="mb-1 text-muted">Região</p>
                     <p class="mb-0 fw-semibold">{{ produto.regiao }}</p>
                 </div>
 
@@ -73,7 +73,7 @@
                 <div class="col-sm-6">
                     <p class="mb-1 text-muted">Entrega estimada</p>
                     <p class="mb-0 fw-semibold">
-                        {{ produto.data_entrega_estimada|default:"Nao informada" }}
+                        {{ produto.data_entrega_estimada|default:"Não informada" }}
                     </p>
                 </div>
             </div>
@@ -115,7 +115,7 @@
 </div>
 
 <div class="mt-5">
-    <h2 class="h4">Avaliacoes</h2>
+    <h2 class="h4">Avaliações</h2>
 
     {% if avaliacoes %}
         <div class="row g-3">
@@ -125,7 +125,7 @@
                         <p class="mb-1">
                             <strong>{{ pedido.avaliacao.nota }}/5</strong>
                         </p>
-                        <p class="mb-1">{{ pedido.avaliacao.comentario|default:"Sem comentario." }}</p>
+                        <p class="mb-1">{{ pedido.avaliacao.comentario|default:"Sem comentário." }}</p>
                         <p class="text-muted mb-0">
                             Por {{ pedido.comprador.username }}
                         </p>
@@ -135,7 +135,7 @@
         </div>
     {% else %}
         <div class="alert alert-info">
-            Este produto ainda nao possui avaliacoes.
+            Este produto ainda não possui avaliações.
         </div>
     {% endif %}
 </div>

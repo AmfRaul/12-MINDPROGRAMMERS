@@ -17,11 +17,11 @@ def avaliar_pedido(request, pedido_id):
     )
 
     if pedido.status != Pedido.StatusPedido.CONCLUIDO:
-        messages.error(request, "Apenas pedidos concluidos podem ser avaliados.")
+        messages.error(request, "Apenas pedidos concluídos podem ser avaliados.")
         return redirect("pedidos:meus_pedidos")
 
     if hasattr(pedido, "avaliacao"):
-        messages.info(request, "Este pedido ja foi avaliado.")
+        messages.info(request, "Este pedido já foi avaliado.")
         return redirect("pedidos:meus_pedidos")
 
     if request.method == "POST":
@@ -33,7 +33,7 @@ def avaliar_pedido(request, pedido_id):
             avaliacao.comprador = request.user
             avaliacao.save()
 
-            messages.success(request, "Avaliacao registrada com sucesso.")
+            messages.success(request, "Avaliação registrada com sucesso.")
             return redirect("pedidos:meus_pedidos")
     else:
         form = AvaliacaoForm()
